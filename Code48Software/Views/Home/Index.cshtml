@@ -1,0 +1,103 @@
+﻿@model List<String>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<div class="jumbotron">
+    <div class="mx-auto" style="text-align:center;margin: 50px;padding: 5px;">
+        <h2>Nebula Code Challenge</h2>
+        <p>
+            ASP.NET MVC to visualise 48 Software development data for practise
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    
+    <div class="border col-md-6" style="border:1px solid black; padding: 56px;">
+        <div class="file-upload-section">
+            <p>Populate database with a file</p>
+            <label for="cars">Choose a file tocopy to DB :</label>
+            <input id="FileID" class="btn btn-primary btn-lg" type="file" contextmenu="Import CSV to Different tables" accept=".xls,.xlsx,.csv" />
+            <p style="color:red">NB: Its only accepts .xls,.xlsx,.csv format </p>
+        </div>
+
+        <div class="table-name-dropdown">
+            <label for="dropdown-table" >Choose a table to modify :</label>
+
+            <select id="TabNameID" name="tableToModify" id="tables">
+                <option value="None">
+                    None
+                </option>
+                @foreach (var Name in Model)
+                {
+                    <option id="@Name" value=@Name + " Table">
+                        @Name
+                    </option>
+                }
+            </select>
+        </div>
+        <button id="BtnPassType" onclick="SendDataToTask()" class="btn btn-success mx-auto" style="margin: 0 auto;" style="margin: 0 auto;"> Done </button>
+
+
+    </div>
+    <div class="border col-md-6" style="border:1px solid black;padding: 56px;">
+        <div class="subject-heading">
+            <p>Update All employees emails with a specific domain</p>
+            <label for="label-your-domain" >Choose a table to modify :</label>
+            <input style="margin-bottom: 20px;"class="form-control" type="text" id="domainID" value="" />
+            <button id="UpdateUserDomainID" onclick="UpdateDomainEmail()" class="btn btn-success" style="margin: 0 auto;"> Done </button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var data;
+        function SendDataToTask() {
+            
+                var TableName = $("#TabNameID").val();
+                var FileData = $("#FileID").val();
+               
+                const fileSelector = document.getElementById('FileID');
+                fileSelector.addEventListener('change', (event) => {
+                    const fileList = event.target.files;
+                    console.log(fileList);
+                });
+
+
+                if (TableName != "None" && FileData != null) {
+                  
+                    alert("You are about to copy data from ");
+                    $.post("/Task/UpdateTable", { TableName: TableName, FileObject: TableName }, function (data) {
+                        alert(data.toString());
+                    }, "text");
+                } else {
+                    //Change the DOM vaues wolud be perfect
+                    var TableName = ""; 
+                    var FileData = "";
+                    alert("OOps !! : This functionaity have not yet been full impemented ");
+                    
+
+                }
+          
+           
+        }
+
+            function UpdateDomainEmail() {
+                //There a proper way to receive Success status or Fiure status from the Server side I chose to ignore
+                var CompanyName = $("#domainID").val();
+                if (CompanyName =!= null) {
+                    $.post("/Task/UpdateCompanyDomain",
+                        { CompanyDomain: CompanyName },
+                        function (data) {
+                            alert(data.toString());
+                        }, "text");
+
+                } else {
+                    alert("Enter company name and try again, Empty name not allowed");
+                }
+                
+            }
+
+    </script>
+</div>
